@@ -1,5 +1,5 @@
 /* Pinned Pup by YMD — service worker. © 2026 Yan Malegi Diardi */
-const SHELL = 'pp-shell-v2';
+const SHELL = 'pp-shell-v3';
 const FONTS = 'pp-fonts-v1';
 const FILES = ['./', './index.html', './manifest.webmanifest', './wilayah.txt', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 

@@ -937,6 +937,19 @@ input:focus,textarea:focus,select:focus{border-color:var(--peri);outline:none}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9) saturate(.7)} }
 :root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9) saturate(.7)}
 input,select,textarea{font-size:16px!important}
+.install-bar{display:flex;align-items:center;gap:10px;background:var(--sun);color:var(--sticker-ink);border:2px solid var(--sticker-ink);box-shadow:0 3px 0 var(--sticker-ink);border-radius:16px;padding:8px 8px 8px 8px;max-width:420px;margin-right:56px;font-weight:800;font-size:14px;line-height:1.25}
+.install-bar img{width:36px;height:36px;border-radius:9px;flex:0 0 auto}
+.install-bar span{flex:1;min-width:0}
+.install-bar .btn{background:var(--sticker-ink);color:#fff}
+.install-bar .x{border:0;background:none;color:var(--sticker-ink);width:32px;height:32px;font-size:20px;font-weight:900;line-height:1}
+.inst-hero{display:flex;gap:14px;align-items:center}
+.inst-hero img{width:68px;height:68px;border-radius:16px;box-shadow:var(--shadow)}
+.inst-hero b{display:block;font-size:18px;font-weight:900}
+.inst-hero span{color:var(--muted);font-weight:700;font-size:14px}
+.inst-card{border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;gap:10px}
+.inst-card.main{border:2px solid var(--sticker-ink);background:var(--surface-2)}
+.inst-card ol{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14.5px;font-weight:600}
+.inst-card .btn{justify-self:start}
 .search input[type=search]{-webkit-appearance:none;appearance:none;padding:0 16px 0 44px;border:0;background:var(--surface);height:46px;border-radius:999px;box-shadow:var(--shadow)}
 .search input[type=search]::-webkit-search-decoration{-webkit-appearance:none}
 .results .src{font-family:var(--font-chip);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 12px 2px}
@@ -966,6 +979,7 @@ input,select,textarea{font-size:16px!important}
           <input type="search" id="map-search" placeholder="Cari restoran, tempat, kelurahan…" autocomplete="off" aria-label="Cari lokasi">
           <ul class="results" id="map-results" hidden></ul>
         </div>
+        <div class="install-bar" id="install-bar" hidden><img src="icon-192.png" alt=""><span>Pasang Pinned Pup di Home Screen</span><button class="btn sm" data-action="install">Pasang</button><button class="x" data-action="install-dismiss" aria-label="Sembunyikan">×</button></div>
         <div class="banner" id="map-banner" hidden><span class="tag">Contoh</span><span>Data contoh sedang tampil.</span><button class="btn sm ghost" data-action="clear-examples">Hapus contoh</button></div>
       </div>
       <div class="map-ctrl" id="map-ctrl">
@@ -1000,7 +1014,7 @@ input,select,textarea{font-size:16px!important}
     <section class="view scroll" id="view-riwayat" hidden aria-label="Riwayat">
       <div class="inner">
         <div class="page-title"><div><h1>Riwayat Pup</h1><p id="log-sub">Semua pin, terbaru di atas.</p></div>
-          <div class="log-actions"><button class="btn ghost sm" data-action="export"><svg class="ico" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 20h16"/></svg>CSV</button><button class="btn ghost sm" data-action="backup">Backup</button><button class="btn ghost sm" data-action="restore">Pulihkan</button><input type="file" id="restore-file" accept="application/json,.json" hidden></div></div>
+          <div class="log-actions"><button class="btn ghost sm" data-action="export"><svg class="ico" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 20h16"/></svg>CSV</button><button class="btn ghost sm" data-action="backup">Backup</button><button class="btn ghost sm" data-action="restore">Pulihkan</button><button class="btn ghost sm" data-action="install" id="btn-install-log">Pasang app</button><input type="file" id="restore-file" accept="application/json,.json" hidden></div></div>
         <div class="log-tools">
           <input type="search" id="log-q" placeholder="Cari tempat, kelurahan, atau catatan" aria-label="Cari riwayat">
           <select id="log-m" aria-label="Filter bulan"></select>
@@ -1072,6 +1086,38 @@ input,select,textarea{font-size:16px!important}
     <p class="form-err" id="f-err" hidden></p>
     <div class="sheet-actions" id="sheet-actions"></div>
   </form>
+</div>
+
+<div class="scrim" id="install-scrim" hidden>
+  <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="install-title">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="install-title">Pasang di Home Screen</h2><button type="button" class="icon-btn" data-action="install-close" aria-label="Tutup"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="inst-hero"><img src="apple-touch-icon.png" alt=""><div><b>Pinned Pup</b><span>Ikon sendiri, layar penuh, tanpa bar Safari.</span></div></div>
+    <div class="inst-card main" id="inst-ios-1">
+      <span class="lbl">Cara 1 · Pasang otomatis</span>
+      <a class="btn" href="pinned-pup.mobileconfig">Pasang otomatis</a>
+      <ol>
+        <li>Tap <b>Izinkan</b> (Allow) saat Safari bertanya. Kalau file-nya terunduh, tap ikon unduhan di Safari lalu tap <b>pinned-pup.mobileconfig</b>.</li>
+        <li>Buka app <b>Pengaturan</b> (Settings), tap <b>Profil Diunduh</b> (Profile Downloaded) di bagian atas.</li>
+        <li>Tap <b>Instal</b>, masukkan kode HP, lalu <b>Instal</b> lagi. Tulisan "Tidak Terverifikasi" itu normal karena profil ini buatan sendiri.</li>
+        <li>Ikon <b>Pinned Pup</b> muncul di Home Screen.</li>
+      </ol>
+    </div>
+    <div class="inst-card" id="inst-ios-2">
+      <span class="lbl">Cara 2 · Lewat menu Bagikan</span>
+      <ol>
+        <li>Tap tombol <b>•••</b> di bar Safari, lalu <b>Bagikan</b> (Share).</li>
+        <li>Geser daftar ke bawah, tap <b>Tambah ke Layar Utama</b> (Add to Home Screen). Kalau tidak ada, tap <b>Edit Tindakan</b> lalu tambahkan.</li>
+        <li>Nyalakan <b>Buka sebagai App Web</b>, lalu tap <b>Tambah</b>.</li>
+      </ol>
+    </div>
+    <div class="inst-card" id="inst-android" hidden>
+      <span class="lbl">Android</span>
+      <button type="button" class="btn" data-action="install-android">Pasang app</button>
+      <p class="hint">Kalau tombol tidak bereaksi: menu ⋮ Chrome, lalu <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>.</p>
+    </div>
+    <p class="hint">Buka halaman ini di <b>Safari</b>, bukan dari dalam app GitHub, Claude, atau WhatsApp. Data di Safari dan di app yang terpasang tersimpan terpisah; pakai Backup lalu Pulihkan (tab Riwayat) kalau mau memindahkan pin.</p>
+  </section>
 </div>
 
 <div id="toast-host" aria-live="polite"></div>
@@ -1371,6 +1417,7 @@ function renderOverlays(){
   $('#map-loading').hidden = state.ready;
   $('#map-empty').hidden = !(state.ready && state.pins.length === 0) || state.picking;
   $('#map-banner').hidden = !state.pins.some(function(p){ return p.example; }) || state.picking;
+  if (typeof renderInstallBar === 'function' && $('#install-bar')) renderInstallBar();
 }
 
 /* ---------- gazetteer: 83 ribu kelurahan/desa (data Kemendagri via paket geografis) ---------- */
@@ -1994,6 +2041,10 @@ document.addEventListener('click', function(e){
     case 'gps': if (state.draft) gpsIntoDraft(state.draft); break;
     case 'locate': getGPS().then(function(c){ showMe(c, true); }).catch(function(e){ toast(e.message); }); break;
     case 'backup': backup(); break;
+    case 'install': openInstall(); break;
+    case 'install-close': $('#install-scrim').hidden = true; break;
+    case 'install-dismiss': try { localStorage.setItem('pp.installDismissed', '1'); } catch (x) {} $('#install-bar').hidden = true; toast('Panduan pasang tetap ada di tab Riwayat.'); break;
+    case 'install-android': if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.finally(function(){ deferredPrompt = null; renderInstallBar(); }); } else toast('Pakai menu ⋮ Chrome, lalu Instal aplikasi.'); break;
     case 'restore': $('#restore-file').click(); break;
     case 'new-at': if (map) map.closePopup(); openSheet(newDraft({ lat: +(+t.dataset.lat).toFixed(6), lng: +(+t.dataset.lng).toFixed(6), place: t.dataset.place || '' })); break;
     case 'edit': editPin(t.dataset.id); break;
@@ -2023,9 +2074,11 @@ document.addEventListener('click', function(e){
 });
 $('#sheet').addEventListener('submit', function(e){ e.preventDefault(); submitForm(); });
 $('#scrim').addEventListener('click', function(e){ if (e.target === this) closeSheet(); });
+$('#install-scrim').addEventListener('click', function(e){ if (e.target === this) this.hidden = true; });
 document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') {
-    if (!$('#scrim').hidden) closeSheet();
+    if (!$('#install-scrim').hidden) $('#install-scrim').hidden = true;
+    else if (!$('#scrim').hidden) closeSheet();
     else if (state.picking) endPick(false);
     else { $('#legend').hidden = true; $('#map-results').hidden = true; }
   }
@@ -2055,6 +2108,23 @@ function restyle(){ styleMap(); }
 try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', restyle); } catch (e) {}
 try { new MutationObserver(restyle).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
 
+/* ---------- install helper ---------- */
+var IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+var IS_STANDALONE = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+var deferredPrompt = null;
+function installDismissed(){ try { return localStorage.getItem('pp.installDismissed') === '1'; } catch (e) { return false; } }
+function renderInstallBar(){
+  var show = !IS_STANDALONE && !installDismissed() && (IS_IOS || !!deferredPrompt) && !state.picking;
+  $('#install-bar').hidden = !show;
+}
+function openInstall(){
+  $('#inst-ios-1').hidden = !IS_IOS; $('#inst-ios-2').hidden = !IS_IOS;
+  $('#inst-android').hidden = IS_IOS;
+  $('#install-scrim').hidden = false;
+}
+window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferredPrompt = e; renderInstallBar(); });
+window.addEventListener('appinstalled', function(){ deferredPrompt = null; $('#install-bar').hidden = true; toast('Pinned Pup terpasang di Home Screen.'); });
+
 /* ---------- boot ---------- */
 $('#brand-mark').innerHTML = pinHTML('#FF6F61', 0, 'happy').replace('width="44" height="55"', 'width="34" height="42"').replace('class="pin"', 'class="pin" style="width:34px;height:42px;filter:none"').replace('class="pin-poop"', 'class="pin-poop" style="left:7px;top:5px;width:20px;height:20px;transform:scale(.77);transform-origin:0 0"');
 $('#fab-ic').innerHTML = poop(30, 'happy');
@@ -2066,6 +2136,7 @@ var h0 = (location.hash || '').slice(1);
 setView(['peta', 'dashboard', 'riwayat'].indexOf(h0) >= 0 ? h0 : 'peta', true);
 renderStatus(); renderOverlays();
 Store.init();
+renderInstallBar(); if (IS_STANDALONE) $('#btn-install-log').hidden = true;
 if ('serviceWorker' in navigator && location.protocol === 'https:') { window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); var swReloaded = false; navigator.serviceWorker.addEventListener('controllerchange', function(){ if (swReloaded) return; swReloaded = true; location.reload(); }); }
 setTimeout(function(){ loadGZ().catch(function(){}); }, 1500);
 setInterval(function(){ if (state.view === 'dashboard' && state.ready && $('#scrim').hidden) renderDash(); }, 60000);
