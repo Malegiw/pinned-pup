@@ -933,7 +933,12 @@ input:focus,textarea:focus,select:focus{border-color:var(--peri);outline:none}
 .gps-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .gps-err{margin:0;font-size:13px;font-weight:700;color:var(--magenta)}
 .log-actions{display:flex;gap:8px;flex-wrap:wrap}
-.leaflet-tile-pane{filter:saturate(1.15)}
+.leaflet-tile-pane{filter:saturate(1.1)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9) saturate(.7)} }
+:root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9) saturate(.7)}
+input,select,textarea{font-size:16px!important}
+.search input[type=search]{-webkit-appearance:none;appearance:none;padding:0 16px 0 44px;border:0;background:var(--surface);height:46px;border-radius:999px;box-shadow:var(--shadow)}
+.search input[type=search]::-webkit-search-decoration{-webkit-appearance:none}
 .results .src{font-family:var(--font-chip);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 12px 2px}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -985,7 +990,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--peri);outline:none}
         <div class="row"><button class="btn line sm" data-action="pick-cancel">Batal</button><button class="btn sm" data-action="pick-ok">Pakai lokasi ini</button></div>
       </div>
       <button class="fab sticker" id="fab" data-action="new"><span class="fab-ic" id="fab-ic"></span>Pup!</button>
-      <div class="map-copy">© 2026 <b>Yan Malegi Diardi</b> · Peta © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit">OpenStreetMap</a>, © CARTO</div>
+      <div class="map-copy">© 2026 <b>Yan Malegi Diardi</b> · Peta © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit">OpenStreetMap</a></div>
     </section>
 
     <section class="view scroll" id="view-dashboard" hidden aria-label="Dashboard">
@@ -1281,11 +1286,8 @@ function buildMap(){
   });
 }
 function styleMap(){
-  if (!map) return;
-  var u = isDark() ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-  if (tiles && tiles._url === u) return;
-  if (tiles) map.removeLayer(tiles);
-  tiles = L_.tileLayer(u, { subdomains: 'abcd', maxZoom: 20, maxNativeZoom: 20, crossOrigin: true }).addTo(map);
+  if (!map || tiles) return;
+  tiles = L_.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 20, maxNativeZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
 }
 function showMe(c, fly){
   if (!map) return;
@@ -2064,7 +2066,7 @@ var h0 = (location.hash || '').slice(1);
 setView(['peta', 'dashboard', 'riwayat'].indexOf(h0) >= 0 ? h0 : 'peta', true);
 renderStatus(); renderOverlays();
 Store.init();
-if ('serviceWorker' in navigator && location.protocol === 'https:') { window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+if ('serviceWorker' in navigator && location.protocol === 'https:') { window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); var swReloaded = false; navigator.serviceWorker.addEventListener('controllerchange', function(){ if (swReloaded) return; swReloaded = true; location.reload(); }); }
 setTimeout(function(){ loadGZ().catch(function(){}); }, 1500);
 setInterval(function(){ if (state.view === 'dashboard' && state.ready && $('#scrim').hidden) renderDash(); }, 60000);
 })();

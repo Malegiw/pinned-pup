@@ -1,5 +1,5 @@
 /* Pinned Pup by YMD — service worker. © 2026 Yan Malegi Diardi */
-const SHELL = 'pp-shell-v1';
+const SHELL = 'pp-shell-v2';
 const FONTS = 'pp-fonts-v1';
 const FILES = ['./', './index.html', './manifest.webmanifest', './wilayah.txt', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
@@ -20,7 +20,17 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
-  // App files: serve from cache instantly, refresh in the background.
+  // The page itself: always try the newest version first, fall back to the saved copy offline.
+  if (url.origin === self.location.origin && (req.mode === 'navigate' || url.pathname.endsWith('/index.html'))) {
+    e.respondWith(
+      fetch(req, { cache: 'no-cache' })
+        .then((res) => { if (res.ok) caches.open(SHELL).then((c) => c.put('./index.html', res.clone())); return res; })
+        .catch(() => caches.open(SHELL).then((c) => c.match('./index.html')))
+    );
+    return;
+  }
+
+  // Other app files: serve from cache instantly, refresh in the background.
   if (url.origin === self.location.origin) {
     e.respondWith(
       caches.open(SHELL).then((cache) =>
