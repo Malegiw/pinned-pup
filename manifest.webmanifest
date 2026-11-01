@@ -1,17 +1,30 @@
 {
   "name": "Pinned Pup by YMD",
   "short_name": "Pinned Pup",
-  "description": "Pin lokasi pup lengkap dengan tanggal dan jam. © 2026 Yan Malegi Diardi.",
+  "description": "Pin lokasi pup lengkap dengan tanggal dan jam, timer, toilet terdekat, insight, dan Pup Wrapped. © 2026 Yan Malegi Diardi.",
   "lang": "id",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FFFBEA",
-  "theme_color": "#FFFFFF",
+  "background_color": "#F0EEE9",
+  "theme_color": "#F0EEE9",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
